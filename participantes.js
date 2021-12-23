@@ -1,6 +1,6 @@
 export class Participantes {
     constructor() {
-        this.lista = JSON.parse(localStorage.getItem("ListaPersonas"))|| []
+        this.lista =  []
     }
 
     listarTodos() {

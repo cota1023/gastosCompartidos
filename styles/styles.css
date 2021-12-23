@@ -1,0 +1,24 @@
+
+.body{
+    background-color: chartreuse;
+}
+
+.titulo-principal{
+    font-size: 3rem;
+    color: whitesmoke;
+}
+
+.contenedor-secundario{
+    border-color: black;
+    border-style:solid;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+.img-agregar{
+    width: 4rem;
+}
+
+.img-rata{
+    width: 10rem;
+}

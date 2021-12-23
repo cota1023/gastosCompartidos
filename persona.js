@@ -1,4 +1,3 @@
-let idPersona = 0
 export class Persona {
 /*     constructor() {
         this.id = idPersona
@@ -9,8 +8,6 @@ export class Persona {
     constructor(nombre, importeGastado) {
         this.id = idPersona
         this.nombre = nombre
-        this.importeGastado = +importeGastado
-        idPersona++
     }
 
 

@@ -3,12 +3,28 @@ export const renderList = (listaId, lista) => {
 
     for (const item of lista) {
         const itemList = document.createElement("li")
-        itemList.innerText = item.nombre + ", Importe Gastado:  " + item.importeGastado
+        itemList.className ="list-group-item"
+        itemList.innerText = item
+        listaContainer.appendChild(itemList)
+    }
+
+}
+
+
+
+export const renderSelect = (selectId, lista) => {
+    const listaContainer = document.getElementById(selectId)
+
+    for (const item of lista) {
+        const itemList = document.createElement("option")
+        itemList.setAttribute("value", item)
+        itemList.innerText = item
 
         listaContainer.appendChild(itemList)
     }
 
 }
+
 
 export const renderTotales = (contenedorId, importe, param) =>{
     const contenedor = document.getElementById(contenedorId)
@@ -22,3 +38,5 @@ export const renderTotales = (contenedorId, importe, param) =>{
 
     contenedor.appendChild(total)
 }
+
+
