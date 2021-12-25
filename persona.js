@@ -5,11 +5,7 @@ export class Persona {
         this.importeGastado = +prompt("Ingrese el monto gastado")
         idPersona++
     } */
-    constructor(nombre, importeGastado) {
-        this.id = idPersona
+    constructor(nombre) {
         this.nombre = nombre
     }
-
-
-
 }

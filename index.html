@@ -75,24 +75,24 @@
             <div>
                 <form>
                     <div class="mb-3">
-                      <label for="select-nombre" class="form-label">Nombre: </label>
-                      <select id="select-nombre" class="form-select" aria-label="Default select example">
-                        <option selected>Seleccionar persona..</option>
-                    </select>
+                        <label for="select-nombre" class="form-label">Nombre: </label>
+                        <select id="select-nombre" class="form-select" aria-label="Default select example">
+                            <option selected>Seleccionar persona..</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="select-gasto" class="form-label">Gasto: </label>
                         <select id="select-gasto" class="form-select" aria-label="Default select example">
-                          <option selected>Seleccionar gasto..</option>
-                      </select>
-                      </div>
-                      <div class="mb-3">
+                            <option selected>Seleccionar gasto..</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="input-importe" class="form-label">Monto: </label>
                         <input id="input-importe" class="form-control" type="number" required>
-                      </div>
+                    </div>
                     <button id="btn-agregar-gasto" type="button" class="btn btn-primary">Guardar Gasto</button>
                     <button type="button" class="btn btn-primary">Finalizar Carga</button>
-                  </form>
+                </form>
             </div>
 
             <!-- <form id="form-gastos">
@@ -114,10 +114,15 @@
         <ul id="lista-totales"></ul>
         <div id="contenedor-totales"></div>
     </div>
+    <script type="module" src="data.js"></script>
+    <script type="module" src="conceptos.js"></script>
+    <script type="module" src="concepto.js"></script>
     <script type="module" src="index.js"></script>
-    <script type="module" src="persona.js"></script>
-    <script type="module" src="participantes.js"></script>
     <script type="module" src="utils.js"></script>
+    <!-- <script type="module" src="persona.js"></script> -->
+    <script type="module" src="participantes.js"></script>
+    <!-- <script type="module" src="ListaGastos.js"></script> -->
+    <script type="module" src="events.js"></script>
     <!-- <script type="module" src="events.js"></script> -->
 </body>
 

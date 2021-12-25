@@ -1,6 +1,8 @@
 export class Conceptos {
     constructor() {
-        this.lista = []
+        console.log(JSON.parse(localStorage.getItem("ListaConceptos")))
+        this.lista = JSON.parse(localStorage.getItem("ListaConceptos")) || []
+        console.log(JSON.parse(localStorage.getItem("ListaConceptos")))
     }
 
     listarTodos() {

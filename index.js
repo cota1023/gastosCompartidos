@@ -15,6 +15,12 @@ let cantidadPersonas = 0
 let montoTotalGastado = 0.00
 let montoDividido = 0.00
 
+const conceptos = new Conceptos()
+//carga inicial si el local storage tiene datos
+let listaConceptos = conceptos.listarTodos()
+renderSelect("select-gasto", listaConceptos)
+//
+
 
 let validador = false
 
@@ -81,7 +87,6 @@ renderTotales("contenedor-totales", montoDividido, "D")
  */
 
 const participantes = new Participantes()
-const conceptos = new Conceptos()
 const gastos = new ListaGastos()
 const btnCantidad = document.getElementById("btnCantidad")
 
