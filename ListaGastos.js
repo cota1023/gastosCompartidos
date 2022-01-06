@@ -10,4 +10,6 @@ export class ListaGastos {
     agregarGasto(item) {
         this.lista.push(item)
         localStorage.setItem("ListaGastos",JSON.stringify(this.lista))
-    }}
+    }
+
+}
