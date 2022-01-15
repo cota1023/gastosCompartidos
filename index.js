@@ -70,7 +70,7 @@ function OrdenarArray(array) {
     }, [])
 
     console.log(resumen)
-    
+
     CalcularImporteTotal(resumen)
     CalcularCantidadPersonas(resumen)
     CalcularImporteDivido()
@@ -130,8 +130,12 @@ const gastos = new ListaGastos()
 
 //sección para seleccionar la cantidad de personas mediante select
 
-const btnCantidad = document.getElementById("btnCantidad")
-btnCantidad.onclick = () => {
+//con Vanilla JS
+/* const btnCantidad = document.getElementById("btnCantidad")
+btnCantidad.onclick = () => { */
+
+// Jquery
+$("#btnCantidad").click(() => {
 
     const cantidadPersonas = document.getElementById("select-cantidad")
 
@@ -153,12 +157,22 @@ btnCantidad.onclick = () => {
         const listaParticipantes = participantes.listarTodos()
         renderList("lista-participantes", listaParticipantes)
         btnCantidad.disabled = true
-        renderSelect("select-nombre", listaParticipantes)
+
+        //con Vanilla JS
+        //renderSelect("select-nombre", listaParticipantes)
+
+        for (const item of listaParticipantes) {
+
+            $('#select-nombre').prepend(`<option value=${item}>${item}</option>`);
+
+        }
+
+
     } else {
         alert("Ingrese una cantidad válida")
     }
 
-}
+})
 
 
 

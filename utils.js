@@ -13,14 +13,16 @@ export const renderList = (listaId, lista) => {
 
 
 export const renderSelect = (selectId, lista) => {
-    const listaContainer = document.getElementById(selectId)
 
+    const listaContainer = document.getElementById(selectId)
     for (const item of lista) {
         const itemList = document.createElement("option")
         itemList.setAttribute("value", item)
         itemList.innerText = item
         listaContainer.appendChild(itemList)
     }
+
+
 
 }
 
