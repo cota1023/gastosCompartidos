@@ -41,3 +41,12 @@ export const renderTotales = (contenedorId, importe, param) => {
 
     contenedor.appendChild(total)
 }
+
+export const getIndexPersonaByNombre = (nombre, array) => {
+    const index = array.findIndex(element => element.nombre === nombre)
+
+    if (!index) {
+        throw new Error(`No existe el elemento con id ${nombre}`)
+    }
+    return index
+}

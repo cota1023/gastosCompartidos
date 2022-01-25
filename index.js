@@ -10,7 +10,8 @@ import {
 import {
     renderList,
     renderTotales,
-    renderSelect
+    renderSelect,
+    getIndexPersonaByNombre
 } from "./utils.js";
 import {
     Conceptos
@@ -31,6 +32,31 @@ renderSelect("select-gasto", listaConceptos) */
 
 
 let validador = false
+const arrayAgrupado = []
+
+// Carga de imagen de la rata
+
+const URL_Json = 'db/data.json'
+
+$("#imagen-rata").click(() => {
+
+    const imagenAleatoria = Math.floor((Math.random() * (5 - 1 + 1)) + 1)
+
+
+    $.getJSON(URL_Json, (response, status) => {
+        if (status !== 'success') {
+            throw new Error('Se produjo un error al cargar la imagen')
+
+        } else {
+            for (const rata of response) {
+                console.log(rata.id + '' + rata.source)
+                if (rata.id == imagenAleatoria) {
+                    document.getElementById("imagen-rata").src = `${rata.source}`
+                }
+            }
+        }
+    })
+})
 
 
 function CalcularCantidadPersonas(array) {
@@ -50,36 +76,51 @@ function CalcularImporteDivido() {
     } else montoDividido = montoTotalGastado / cantidadPersonas
 }
 
-function OrdenarArray(array) {
+function AgruparArray(array) {
 
     //ordeno array de menor a mayor
-    let arrayOrdenado = []
-    arrayOrdenado = array.sort(function (a, b) {
-        return (a.importeGastado - b.importeGastado)
-    })
+    /*     let arrayOrdenado = []
+        arrayOrdenado = array.sort(function (a, b) {
+            return (a.importeGastado - b.importeGastado)
+        }) */
 
-    //sumar importes por nombre
+    for (const gasto of array) {
+        console.log(gasto)
+        //if (arrayAgrupado.indexOf(n => n.nombre === gasto.nombre)) {
+            console.log(arrayAgrupado.findIndex(n => {
+                return n.nombre === gasto.nombre
+            }))
 
-    const resumen = arrayOrdenado.reduce((p, c) => {
-        if (c.nombre in p) {
-            p[c.nombre] += c.importeGastado; //<-- si ya existe le sumamos el total
+            const i = arrayAgrupado.findIndex(n => {
+                return n.nombre === gasto.nombre
+            })
+
+        if (i !== -1) {
+/*             const index = getIndexPersonaByNombre(gasto.nombre, arrayAgrupado)
+            console.log(index) */
+            let importeNuevo = arrayAgrupado[i].importeGastado += gasto.importeGastado
+            let nuevoItem = {
+                nombre: gasto.nombre,
+                importeGastado: importeNuevo,
+                concepto: 'N/A'
+            }
+            console.log(nuevoItem)
+            arrayAgrupado[i] = nuevoItem
         } else {
-            p[c.nombre] = c.importeGastado; //<-- si no existe le asignamos el total
+            arrayAgrupado.push(gasto)
         }
-        return p;
-    }, [])
+    }
+    console.log(arrayAgrupado)
 
-    console.log(resumen)
-
-    CalcularImporteTotal(resumen)
-    CalcularCantidadPersonas(resumen)
+    CalcularImporteTotal(arrayAgrupado)
+    CalcularCantidadPersonas(arrayAgrupado)
     CalcularImporteDivido()
 
     console.log(montoDividido)
     alert(`Cada uno debe poner ${montoDividido.toString()}.`)
 
 
-    array.forEach(element => {
+    arrayAgrupado.forEach(element => {
         if (element.importeGastado < montoDividido) {
             let montoAPagar = montoDividido - element.importeGastado
             alert(`${element.nombre} debe pagar ${montoAPagar}. `)
@@ -92,36 +133,6 @@ function OrdenarArray(array) {
 
 }
 
-/* function MostrarPersonasYGastos(array){
-console.log("Detalle de Personas y Gastos")
-    array.forEach(element => {
-    console.log(element.nombre, element.importeGastado)
-});
-} */
-
-//form carga de gastos
-
-/* const formGastos = document.getElementById("form-gastos")
-const inputNombre = document.getElementById("input-nombre")
-const inputMonto = document.getElementById("input-monto")
-
-formGastos.addEventListener("submit", ()=>{
-    const nombre = inputNombre.value
-    const monto = inputMonto.value
-    const persona = new Persona(nombre,monto)
-    participantes.agregarPersona(persona)
-
-})
-
-const listaParticipantes = participantes.listarTodos()
-CalcularImporteTotal(listaParticipantes)
-CalcularCantidadPersonas(listaParticipantes)
-montoDividido = CalcularImporteDivido()
-
-renderList("lista-totales", listaParticipantes)
-renderTotales("contenedor-totales", montoTotalGastado, "T")
-renderTotales("contenedor-totales", montoDividido, "D")
- */
 
 //declaro lista de participantes que se inicializa como lista vacía
 const participantes = new Participantes()
@@ -158,14 +169,10 @@ $("#btnCantidad").click(() => {
         renderList("lista-participantes", listaParticipantes)
         btnCantidad.disabled = true
 
-        //con Vanilla JS
-        //renderSelect("select-nombre", listaParticipantes)
+        $('.collapse').collapse()
 
-        for (const item of listaParticipantes) {
 
-            $('#select-nombre').prepend(`<option value=${item}>${item}</option>`);
-
-        }
+        renderSelect("select-nombre", listaParticipantes)
 
 
     } else {
@@ -174,7 +181,7 @@ $("#btnCantidad").click(() => {
 
 })
 
-
+//Paso 2 - Botón Agregar conceptos
 
 const btnConcepto = document.getElementById("boton-concepto")
 btnConcepto.onclick = () => {
@@ -193,13 +200,33 @@ btnConcepto.onclick = () => {
 
 }
 
-const btnFinalizaCarga = document.getElementById("btnConceptos")
-btnFinalizaCarga.onclick = () => {
-    let listaConceptos = conceptos.listarTodos()
-    renderList("lista-conceptos", listaConceptos)
-    btnFinalizaCarga.disabled = true
-    renderSelect("select-gasto", listaConceptos)
+//Paso 2 - Animaciones sobre el botón de agregar concepto
+
+$('#boton-concepto').mouseout(function () {
+    $(".img-agregar").css('width', '4rem')
+});
+
+$('#boton-concepto').mouseenter(function () {
+    $(".img-agregar").css('width', '4.1rem')
+});
+
+//Paso 2 - Botón Finalizar Carga
+
+const btnFinalizarCarga = document.getElementById("btnConceptos")
+btnFinalizarCarga.onclick = () => {
+    if (JSON.parse(localStorage.getItem("ListaConceptos")) == null) {
+        alert('Tenés que agregar al menos un concepto para continuar!')
+    } else {
+
+        const listaConceptos = conceptos.listarTodos()
+        console.log(listaConceptos)
+        renderSelect('select-gasto', listaConceptos)
+        $('.collapse').collapse()
+    }
+
 }
+
+//Paso 3 -  Boton Guardar Gasto
 
 const btnAgregarGasto = document.getElementById("btn-agregar-gasto")
 btnAgregarGasto.onclick = () => {
@@ -209,14 +236,40 @@ btnAgregarGasto.onclick = () => {
     let gasto = inputGasto.value
     const inputImporte = document.getElementById("input-importe")
     let importe = +inputImporte.value
-    let nuevoGasto = new Gasto(nombre, gasto, importe)
 
-    gastos.agregarGasto(nuevoGasto)
+    if (nombre === "Seleccionar persona.." || gasto === "Seleccionar gasto.." || importe === 0) {
+        alert('Alguno de los datos que ingresaste no es válido.')
+    } else {
+        let nuevoGasto = new Gasto(nombre, gasto, importe)
+        gastos.agregarGasto(nuevoGasto)
+        alert('El gasto se guardó correctamente.')
+        inputNombre.selectedIndex = 0
+        inputGasto.selectedIndex = 0
+        inputImporte.value = 0
+    }
+
 
 }
 
+//Paso 3 -  Boton Finalizar Carga
+
+const btnFinalizarCargaGastos = document.getElementById("btn-finalizar-gasto")
+btnFinalizarCargaGastos.onclick = () => {
+
+    if (JSON.parse(localStorage.getItem("ListaGastos")) == null) {
+        alert('Tenés que asociar al menos un gasto para continuar!')
+    } else {
+        const listaGastos = gastos.listarTodos()
+        console.log(listaGastos)
+        renderList('lista-conceptos', listaGastos)
+    }
+
+}
+
+//CALCULO - BOTON DIVISION RAPIDA
+
 const btnCalculaRapido = document.getElementById("btn-calcula-rapido")
 btnCalculaRapido.onclick = () => {
-    OrdenarArray(gastos.listarTodos())
+    AgruparArray(gastos.listarTodos())
 
 }

@@ -1,0 +1,31 @@
+[{
+        "id": 1,
+        "name": "Ratita 1",
+        "username": "Ratita 1",
+        "source": "./img/rata.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Ratita 2",
+        "username": "Bart",
+        "source": "./img/rata2.png"
+    },
+    {
+        "id": 3,
+        "name": "Ratita 3",
+        "username": "Ratata",
+        "source": "./img/rata3.jpg"
+    },
+    {
+        "id": 4,
+        "name": "Ratita 4",
+        "username": "Ratita 4",
+        "source": "./img/rata4.jpeg"
+    },
+    {
+        "id": 5,
+        "name": "Ratita 5",
+        "username": "Ratita 5",
+        "source": "./img/rata5.jpg"
+    }
+]

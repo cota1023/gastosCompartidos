@@ -1,6 +1,7 @@
 
 .body{
-    background-color: chartreuse;
+    background-color:  #239025 ;
+    font-family: 'Russo One', sans-serif;
 }
 
 .titulo-principal{
@@ -8,12 +9,12 @@
     color: whitesmoke;
 }
 
-.contenedor-secundario{
+/* .contenedor-secundario{
     border-color: black;
     border-style:solid;
     border-radius: 0.5rem;
     position: relative;
-}
+} */
 
 .img-agregar{
     width: 4rem;
