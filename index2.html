@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="./styles/styles2.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <title>Calculadora de Gastos Compartidos v0.99</title>
+</head>
+
+<body class="body">
+
+    <div class="container principal">
+        <div class="titulo-principal">
+            <h1 class="text-uppercase mt-5">Calculadora de Gastos</h1>
+        </div>
+        <div class="container contenedor-secundario">
+            <div class="container text-center pb-5 pt-3">
+                <img id="imagen-rata" src="./img/rata.jpg" alt="" class="img-rata rounded-circle">
+                <p class="pt-2 titulo-principal">Click en la imágen para ver qué clase de rata sos hoy.</p>
+            </div>
+
+            <div class="box">
+
+                <div class="fila-superior-1 mt-5 container-fluid">
+                    <img src="./img/1c.png" alt="Paso 1" id="img1" class="img-pasos">
+                    <img src="./img/2.png" alt="Paso 2" id="img2" class="img-pasos">
+                    <img src="./img/3.png" alt="Paso 3" id="img3" class="img-pasos">
+                </div>
+
+                <!-- SECCION 1 // seleccion de cantidad de personas-->
+                <div class="fila-superior-2 " id="seccion-1">
+                    <h2 class="fw-bold pt-5">¿Cuántas personas son?</h2>
+                    <h4>Empecemos indicando entre cuántas personas vamos a dividir los gastos.</h4>
+
+                    <div class="pt-5 col-4">
+                        <select id="select-cantidad" class="form-select" aria-label="Default select example">
+                            <option selected>Seleccionar cantidad..</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+
+                    <form class="row g-12 pt-4">
+                        <div class="col-6">
+                            <label for="inputNombre">Ingresá el nombre:</label>
+                            <input type="text" id="inputNombre" class="form-control">
+                        </div>
+                        <div class="pt-2">
+                            <button type="button" class="btn btn-success mb-3" id="btnAgregarNombres">Agregar</button>
+                        </div>
+                        <div class="pt-2">
+                            <h6 id="nombresFaltantes"></h6>
+                        </div>
+                    </form>
+                </div>
+                <!-- SECCION 2 // carga de conceptos de gastos-->
+                <div class="fila-superior-2 mt-5" id="seccion-2">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-4">
+                                <h3>Concepto del gasto</h3>
+                            </div>
+                            <div class="pt-3">
+                                <input id="input-concepto" type="text" class="col-6" id="input-nombre-gasto"
+                                    placeholder="Ej: Bebidas">
+                                <img id="boton-concepto" src="./img/mas.png" alt="Agregar Concepto" class="img-agregar">
+                            </div>
+                            <div class="pt-5">
+                                <h6>Una vez que hayas cargado todos los conceptos continuá al último paso.</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--SECCION 3 // asignación de gastos-->
+
+                <div class="fila-superior-2" id="seccion-3">
+                    <form>
+                        <div class="mb-3">
+                            <label for="select-nombre" class="form-label">Nombre: </label>
+                            <select id="select-nombre" class="form-select" aria-label="Default select example">
+                                <option selected>Seleccionar persona..</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="select-gasto" class="form-label">Gasto: </label>
+                            <select id="select-gasto" class="form-select" aria-label="Default select example">
+                                <option selected>Seleccionar gasto..</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="input-importe" class="form-label">Monto: </label>
+                            <input id="input-importe" class="form-control" type="number" required>
+                        </div>
+                        <button id="btn-agregar-gasto" type="button" class="btn btn-success">Guardar
+                            Gasto</button>
+                    </form>
+                </div>
+
+
+                <!--SECCION 4 // resultado-->
+
+                <div class="fila-superior-2" id="seccion-4">
+                    <div id="seccion4-total"></div>
+                    <div id="seccion4-dividido"></div>
+                    <div id="seccion4-detalle">
+                        <ul id="seccion4-detalle-lista"></ul>
+                    </div>
+                </div>
+
+
+
+                <div class="fila-superior-3 mt-5 mb-5">
+
+                    <img src="./img/back.png" alt="Atrás" id="img-back" class="img-back-next">
+
+                    <img src="./img/next.png" alt="Siguiente" id="img-next" class="img-back-next">
+
+                </div>
+
+
+
+
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script type="module" src="index.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>

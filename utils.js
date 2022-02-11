@@ -1,4 +1,4 @@
-export const renderList = (listaId, lista) => {
+/* export const renderList = (listaId, lista) => {
     const listaContainer = document.getElementById(listaId)
 
     for (const item of lista) {
@@ -8,7 +8,9 @@ export const renderList = (listaId, lista) => {
         listaContainer.appendChild(itemList)
     }
 
-}
+    seccion4-detalle-lista
+
+} */
 
 
 
@@ -27,26 +29,44 @@ export const renderSelect = (selectId, lista) => {
 }
 
 
-export const renderTotales = (contenedorId, importe, param) => {
+export const renderTotales = (contenedorId, importe, param, array = [], montoDividido = 0) => {
     const contenedor = document.getElementById(contenedorId)
     const total = document.createElement("H2")
     if (param == "T") {
-        total.innerText = `Monto total gastado: ${importe}.`
+        total.innerText = `Monto total gastado: ${importe.toFixed(2)}.`
+        contenedor.appendChild(total)
     } else if (param == "D") {
-        total.innerText = `Monto total dividido: ${importe}.`
+        total.innerText = `Monto total dividido: ${importe.toFixed(2)}.`
+        contenedor.appendChild(total)
+    } else if (param == "L") {
+        
+        
+
+        for (const element of array) {
+            const listaContainer = document.getElementById(contenedorId)
+            const itemList = document.createElement("li")
+            itemList.className = "list-group-item"
+            
+            if (element.importeGastado < montoDividido) {
+                let montoAPagar = montoDividido - element.importeGastado
+                itemList.innerText = `${element.nombre} debe pagar ${montoAPagar.toFixed(2)}. `
+                listaContainer.appendChild(itemList)
+            } else if (element.importeGastado > montoDividido) {
+                let montoARecibir = element.importeGastado - montoDividido
+                itemList.innerText = `${element.nombre} debe recibir ${montoARecibir.toFixed(2)}. `
+                listaContainer.appendChild(itemList)
+            } else if(element.importeGastado > montoDividido){
+                itemList.innerText = `${element.nombre} no debe poner ni recibir nada.`
+                listaContainer.appendChild(itemList)
+            }
+            
+        }
+        
+        
     } else {
         alert("ERROR")
     }
 
 
-    contenedor.appendChild(total)
-}
 
-export const getIndexPersonaByNombre = (nombre, array) => {
-    const index = array.findIndex(element => element.nombre === nombre)
-
-    if (!index) {
-        throw new Error(`No existe el elemento con id ${nombre}`)
-    }
-    return index
 }

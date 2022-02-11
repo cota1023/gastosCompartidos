@@ -8,10 +8,8 @@ import {
     Participantes
 } from "./participantes.js";
 import {
-    renderList,
     renderTotales,
-    renderSelect,
-    getIndexPersonaByNombre
+    renderSelect
 } from "./utils.js";
 import {
     Conceptos
@@ -20,9 +18,10 @@ import {
     validarStringONulo,
     validarSelect
 } from "./validadores.js"
-let cantidadPersonas = 0
+let cantidadDePersonas = 0
 let montoTotalGastado = 0.00
 let montoDividido = 0.00
+let paginaActual = 1
 
 //carga inicial si el local storage tiene datos
 const conceptos = new Conceptos()
@@ -49,7 +48,6 @@ $("#imagen-rata").click(() => {
 
         } else {
             for (const rata of response) {
-                console.log(rata.id + '' + rata.source)
                 if (rata.id == imagenAleatoria) {
                     document.getElementById("imagen-rata").src = `${rata.source}`
                 }
@@ -60,7 +58,7 @@ $("#imagen-rata").click(() => {
 
 
 function CalcularCantidadPersonas(array) {
-    cantidadPersonas = array.length
+    cantidadDePersonas = array.length
 }
 
 function CalcularImporteTotal(array) {
@@ -73,62 +71,39 @@ function CalcularImporteTotal(array) {
 function CalcularImporteDivido() {
     if (montoTotalGastado < 0) {
         alert("Ocurrió un error al realizar el cálculo.")
-    } else montoDividido = montoTotalGastado / cantidadPersonas
+    } else montoDividido = montoTotalGastado / cantidadDePersonas
 }
 
 function AgruparArray(array) {
 
-    //ordeno array de menor a mayor
-    /*     let arrayOrdenado = []
-        arrayOrdenado = array.sort(function (a, b) {
-            return (a.importeGastado - b.importeGastado)
-        }) */
-
     for (const gasto of array) {
-        console.log(gasto)
-        //if (arrayAgrupado.indexOf(n => n.nombre === gasto.nombre)) {
-            console.log(arrayAgrupado.findIndex(n => {
-                return n.nombre === gasto.nombre
-            }))
 
-            const i = arrayAgrupado.findIndex(n => {
-                return n.nombre === gasto.nombre
-            })
+        const i = arrayAgrupado.findIndex(n => {
+            return n.nombre === gasto.nombre
+        })
 
         if (i !== -1) {
-/*             const index = getIndexPersonaByNombre(gasto.nombre, arrayAgrupado)
-            console.log(index) */
             let importeNuevo = arrayAgrupado[i].importeGastado += gasto.importeGastado
             let nuevoItem = {
                 nombre: gasto.nombre,
                 importeGastado: importeNuevo,
                 concepto: 'N/A'
             }
-            console.log(nuevoItem)
+
             arrayAgrupado[i] = nuevoItem
         } else {
             arrayAgrupado.push(gasto)
         }
     }
-    console.log(arrayAgrupado)
+
 
     CalcularImporteTotal(arrayAgrupado)
-    CalcularCantidadPersonas(arrayAgrupado)
     CalcularImporteDivido()
 
-    console.log(montoDividido)
-    alert(`Cada uno debe poner ${montoDividido.toString()}.`)
 
-
-    arrayAgrupado.forEach(element => {
-        if (element.importeGastado < montoDividido) {
-            let montoAPagar = montoDividido - element.importeGastado
-            alert(`${element.nombre} debe pagar ${montoAPagar}. `)
-        } else if (element.importeGastado > montoDividido) {
-            let montoARecibir = element.importeGastado - montoDividido
-            alert(`${element.nombre} debe recibir ${montoARecibir}. `)
-        }
-    })
+    renderTotales("seccion4-total", montoTotalGastado, "T")
+    renderTotales("seccion4-dividido", montoDividido, "D")
+    renderTotales("seccion4-detalle-lista", 0, "L", arrayAgrupado, montoDividido)
 
 
 }
@@ -166,13 +141,11 @@ $("#btnCantidad").click(() => {
 
         }
         const listaParticipantes = participantes.listarTodos()
-        renderList("lista-participantes", listaParticipantes)
-        btnCantidad.disabled = true
-
-        $('.collapse').collapse()
-
 
         renderSelect("select-nombre", listaParticipantes)
+
+        CalcularCantidadPersonas(listaParticipantes)
+
 
 
     } else {
@@ -210,21 +183,7 @@ $('#boton-concepto').mouseenter(function () {
     $(".img-agregar").css('width', '4.1rem')
 });
 
-//Paso 2 - Botón Finalizar Carga
 
-const btnFinalizarCarga = document.getElementById("btnConceptos")
-btnFinalizarCarga.onclick = () => {
-    if (JSON.parse(localStorage.getItem("ListaConceptos")) == null) {
-        alert('Tenés que agregar al menos un concepto para continuar!')
-    } else {
-
-        const listaConceptos = conceptos.listarTodos()
-        console.log(listaConceptos)
-        renderSelect('select-gasto', listaConceptos)
-        $('.collapse').collapse()
-    }
-
-}
 
 //Paso 3 -  Boton Guardar Gasto
 
@@ -251,25 +210,145 @@ btnAgregarGasto.onclick = () => {
 
 }
 
-//Paso 3 -  Boton Finalizar Carga
 
-const btnFinalizarCargaGastos = document.getElementById("btn-finalizar-gasto")
-btnFinalizarCargaGastos.onclick = () => {
+// NUEVO JS
 
-    if (JSON.parse(localStorage.getItem("ListaGastos")) == null) {
-        alert('Tenés que asociar al menos un gasto para continuar!')
+// Jquery
+
+
+
+$('#select-cantidad').on('change', function () {
+
+    let personasRestantes = this.value - participantes.listarTodos().length
+    let texto = `Te quedan cargar ${personasRestantes} personas`
+    if (personasRestantes == 0) {
+        texto = "Ya cargaste a todas las personas. Continúa en el siguiente paso."
+        $('#nombresFaltantes').text(texto)
+    } else if (personasRestantes < 0) {
+        texto = "Vuelve a empezar para continuar"
+        participantes.borrarPersonas()
+    } else texto = `Te quedan cargar ${personasRestantes} personas`
+
+    $('#nombresFaltantes').text(texto)
+});
+
+$("#btnAgregarNombres").click(() => {
+
+
+    let nombrePersona = inputNombre.value
+    validador = validarStringONulo(nombrePersona)
+    if (!validador) {
+        alert("El nombre ingresado no es válido. Ingrese otro nombre")
+        inputNombre.value = ""
+    } else if (participantes.listarTodos().length < $('#select-cantidad').val()) {
+        participantes.agregarPersona(nombrePersona)
+        inputNombre.value = ""
+        let personasTotales = $('#select-cantidad').val()
+        let personasCargadas = participantes.listarTodos().length
+        let texto = ""
+        if (personasTotales - personasCargadas == 0) {
+            texto = "Ya cargaste a todas las personas. Continúa en el siguiente paso."
+            $('#nombresFaltantes').text(texto)
+        } else if (personasTotales - personasCargadas < 0) {
+            texto = "Vuelve a empezar para continuar"
+            participantes.borrarPersonas()
+        } else texto = `Te quedan cargar ${personasTotales - personasCargadas} personas`
+
+        $('#nombresFaltantes').text(texto)
     } else {
-        const listaGastos = gastos.listarTodos()
-        console.log(listaGastos)
-        renderList('lista-conceptos', listaGastos)
+        alert("Ya cargaste a todas las personas")
     }
 
-}
+})
 
-//CALCULO - BOTON DIVISION RAPIDA
+$("#img-next").click(() => {
 
-const btnCalculaRapido = document.getElementById("btn-calcula-rapido")
-btnCalculaRapido.onclick = () => {
-    AgruparArray(gastos.listarTodos())
+    if (paginaActual == 1) {
 
-}
+        let personasTotales = $('#select-cantidad').val()
+        let personasCargadas = participantes.listarTodos().length
+        let texto = ""
+        if (personasTotales - personasCargadas > 0) {
+            alert('Todavía te faltan cargar personas')
+
+        } else {
+
+            document.getElementById("img2").src = "./img/2c.png"
+            paginaActual = 2
+            $("#seccion-1").hide()
+            $("#seccion-2").show()
+
+            const listaParticipantes = participantes.listarTodos()
+            renderSelect("select-nombre", listaParticipantes)
+            CalcularCantidadPersonas(listaParticipantes)
+        }
+
+
+    } else if (paginaActual == 2) {
+
+        //logica de la seccion 2
+
+        if (JSON.parse(localStorage.getItem("ListaConceptos")) == null) {
+            alert('Tenés que agregar al menos un concepto para continuar!')
+        } else {
+
+            document.getElementById("img3").src = "./img/3c.png"
+            paginaActual = 3
+            $("#seccion-1").hide()
+            $("#seccion-2").hide()
+            $("#seccion-3").show()
+            $("#seccion-4").hide()
+
+            const listaConceptos = conceptos.listarTodos()
+
+            renderSelect('select-gasto', listaConceptos)
+            document.getElementById("img-next").src = "./img/finalizar.png"
+
+
+
+
+        }
+    } else if (paginaActual == 3) {
+
+        if (JSON.parse(localStorage.getItem("ListaGastos")) == null) {
+            alert('Tenés que asociar al menos un gasto para continuar!')
+        } else {
+            const listaGastos = gastos.listarTodos()
+
+            AgruparArray(listaGastos)
+            $("#seccion-1").hide()
+            $("#seccion-2").hide()
+            $("#seccion-3").hide()
+            $("#seccion-4").show()
+            $("#img-back").hide()
+            $("#img-next").hide()
+
+        }
+
+    }
+
+})
+
+$("#img-back").click(() => {
+
+    if (paginaActual == 1) {
+        alert('No se puede volver atrás!')
+        document.getElementById("img-next").src = "./img/next.png"
+    } else if (paginaActual == 2) {
+        document.getElementById("img2").src = "./img/2.png"
+        document.getElementById("img-next").src = "./img/next.png"
+        paginaActual = 1
+        $("#seccion-1").show()
+        $("#seccion-2").hide()
+        $("#seccion-3").hide()
+        $("#seccion-4").hide()
+    } else if (paginaActual == 3) {
+        document.getElementById("img3").src = "./img/3.png"
+        document.getElementById("img-next").src = "./img/next.png"
+        paginaActual = 2
+        $("#seccion-1").hide()
+        $("#seccion-2").show()
+        $("#seccion-3").hide()
+    }
+
+})

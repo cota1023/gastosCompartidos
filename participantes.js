@@ -12,24 +12,11 @@ export class Participantes {
         localStorage.setItem("ListaPersonas",JSON.stringify(this.lista))
     }
 
-    getPersonaById(id) {
-        const item = this.lista.find(element => element.id === id)
-
-        if (!item) {
-            throw new Error(`No existe el elemento con id ${id}`)
-        }
-        return item
+    borrarPersonas(){
+        localStorage.removeItem("ListaPersonas")
+        this.lista =  []
     }
 
-    borrarPersona(id) {
-        const item = this.getPersonaById(id)
-        const index = this.lista.indexOf(item)
 
-        this.lista.splice(index, 1)
-        console.log("Se borro")
-    }
 
-    getMontoGastadobyId() {
-        return this.importeGastado
-    }
 }
